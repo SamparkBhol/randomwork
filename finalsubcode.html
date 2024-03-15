@@ -6,7 +6,7 @@
     <title>User Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Custom CSS */
+
         @media (max-width: 639px) {
             /* Adjustments for phones */
             .lg\\:flex {
@@ -27,6 +27,90 @@
             display: flex;
             justify-content: center;
             flex-grow: 1;
+        }
+
+        /* Highlight line effect on hover */
+        .nav-links a {
+            position: relative;
+            text-decoration: none;
+
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::before {
+            width: 100%;
+            color: #4CAF50;
+        }
+
+        /* Style for success message */
+        .success-message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Style for content sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Collapsible sidebar styles */
+        .sidebar {
+            width: 220px;
+            transition: width 0.3s ease;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar.collapsed .sidebar-menu {
+            display: none;
+        }
+
+        .sidebar-menu {
+            padding-top: 20px;
+        }
+
+        .sidebar-menu li {
+            list-style-type: none;
+            padding: 10px;
+            transition: padding 0.3s ease;
+        }
+
+        .sidebar-menu li:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.collapsed .sidebar-menu li {
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .sidebar.collapsed .sidebar-menu li:hover {
+            background-color: transparent;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -60,17 +144,25 @@
 
         <!-- Navigation Links -->
         <div class="nav-links"> <!-- Updated here -->
-            <ul class="flex space-x-4"> <!-- Moved to ul -->
-                <li><a href="#"
-                       class="hover:text-gray-300">Home</a></li>
-                <li><a href="#"
-                       class="hover:text-gray-300">Services</a></li>
-                <li><a href="#"
-                       class="hover:text-gray-300">Blog</a></li>
-                <li><a href="#"
-                       class="hover:text-gray-300">Offers</a></li>
-                <li><a href="#" class="hover:text-gray-300">About
-                        Us</a></li>
+            <ul class="flex space-x-4"> 
+                <li><a href="#home"
+                       class="hover:text-gray-300"
+                       onclick="showContent('home')">Home</a></li>
+                <li><a href="#services"
+                       class="hover:text-gray-300"
+                       onclick="showContent('services')">Services</a></li>
+                <li><a href="#blog"
+                       class="hover:text-gray-300"
+                       onclick="showContent('blog')">Blog</a></li>
+                <li><a href="#offers"
+                       class="hover:text-gray-300"
+                       onclick="showContent('offers')">Offers</a></li>
+                <li><a href="#about"
+                       class="hover:text-gray-300"
+                       onclick="showContent('about')">About Us</a></li>
+                <li><a href="#bank"
+                       class="hover:text-gray-300"
+                       onclick="showContent('bank')">Bank Details</a></li> 
             </ul>
         </div>
         <!-- Search Form -->
@@ -82,120 +174,136 @@
                     class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-r-md"
                     onclick="search()">Search</button>
         </form>
+        <!-- Sidebar Toggle Button -->
+        <button onclick="toggleSidebar()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-r-md">Toggle Sidebar</button>
     </div>
 </nav>
 
 <div class="flex flex-col lg:flex-row">
     <!-- Sidebar -->
-    <div class="w-full lg:w-48 bg-gray-800 text-white py-4 flex-none">
-        <ul>
-            <li><a href="#" class="block py-2 px-4"
-                   onclick="showBankDetails()">My Dashboard</a></li>
-            <!-- Updated here -->
-            <li><a href="#" class="block py-2 px-4">TOTM Links</a></li>
-            <li><a href="#" class="block py-2 px-4">Daily
-                    Summary</a></li>
-            <li><a href="#" class="block py-2 px-4 bg-gray-700">Bank
-                    Details</a></li>
-        </ul>
+    <div class="sidebar w-full lg:w-48 bg-gray-800 text-white py-4 flex-none">
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="#dashboard" class="block py-2 px-4"
+                       onclick="showContent('dashboard')">My Dashboard</a></li>
+                <li><a href="#totm" class="block py-2 px-4"
+                       onclick="showContent('totm')">TOTM Links</a></li>
+                <li><a href="#summary" class="block py-2 px-4"
+                       onclick="showContent('summary')">Daily Summary</a></li>
+                <li><a href="#bank" class="block py-2 px-4"
+                       onclick="showContent('bank')">Bank Details</a></li>
+            </ul>
+        </div>
     </div>
     <!-- Main Content -->
     <div class="flex-1 p-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Editable Input Screen -->
-            <div class="bg-white rounded-lg p-6 hidden"
-                 id="bankUpdateForm"> <!-- Initially hidden -->
-                <h2 class="text-lg font-semibold mb-4">Update Bank
-                    Details</h2>
+
+            <div class="bg-white rounded-lg p-6 content-section active" id="homeContent"> <!-- Initially active -->
+                <h2>Hello, for this sample doc pls click on the bank deatils and upon save it will redirect you to your dashboard to display your content </h2>
+
+            </div>
+            <div class="bg-white rounded-lg p-6 content-section" id="servicesContent">
+                <h2>Services Content</h2>
+
+            </div>
+            <div class="bg-white rounded-lg p-6 content-section" id="blogContent">
+                <h2>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatibus possimus temporibus eveniet. Tempora saepe consequatur debitis eaque. Et tempora, odio, obcaecati veritatis, distinctio perspiciatis sint natus repellat beatae alias quibusdam dolor eius consectetur aperiam reprehenderit dolorum sapiente ullam mollitia.</h2>
+
+            </div>
+            <div class="bg-white rounded-lg p-6 content-section" id="offersContent">
+                <h2>Offers Content</h2>
+
+            </div>
+            <div class="bg-white rounded-lg p-6 content-section" id="aboutContent">
+                <h2>About Us Content</h2>
+
+            </div>
+            <div class="bg-white rounded-lg p-6 content-section" id="dashboardContent">
+                <!-- Bank Details saved message -->
+                <div id="bankDetailsSavedMessage" class="success-message">Bank details saved successfully!</div>
+                <!-- Display Bank Details -->
+                <div id="bankDetailsView">
+                    <h2><b>Bank Details</b></h2>
+                    <p>Account Holder Name: <span id="viewAccountHolderName"></span></p>
+                    <p>Account Number: <span id="viewAccountNumber"></span></p>
+                    <p>IFSC Code: <span id="viewIFSCCode"></span></p>
+                    <p>Bank Name: <span id="viewBankName"></span></p>
+                    <p>Bank City: <span id="viewBankCity"></span></p>
+                    <p>Branch Name: <span id="viewBranchName"></span></p>
+                    <p>Relation with Account Holder: <span id="viewRelationWithAccountHolder"></span></p>
+                </div>
+            </div>
+            <!-- Bank Details -->
+            <div class="bg-white rounded-lg p-6 content-section" id="bankContent">
+                <h2>Bank Details</h2>
+                <p><b>Update Bank Details</b></p>
                 <form id="bankDetailsForm" class="space-y-4">
                     <div>
-                        <label for="accountHolderName"
-                               class="block">Account Holder Name:</label>
-                        <input type="text" id="accountHolderName"
-                               name="accountHolderName"
+                        <label for="accountHolderName" class="block">Account Holder Name:</label>
+                        <input type="text" id="accountHolderName" name="accountHolderName"
                                class="w-full border rounded-md px-4 py-2">
                     </div>
                     <div>
-                        <label for="accountNumber" class="block">Account
-                            Number:</label>
-                        <input type="text" id="accountNumber"
-                               name="accountNumber"
+                        <label for="accountNumber" class="block">Account Number:</label>
+                        <input type="text" id="accountNumber" name="accountNumber"
                                class="w-full border rounded-md px-4 py-2">
                     </div>
                     <div>
-                        <label for="ifscCode" class="block">IFSC
-                            Code:</label>
+                        <label for="ifscCode" class="block">IFSC Code:</label>
                         <input type="text" id="ifscCode" name="ifscCode"
                                class="w-full border rounded-md px-4 py-2">
                     </div>
                     <div>
-                        <label for="bankName" class="block">Bank
-                            Name:</label>
+                        <label for="bankName" class="block">Bank Name:</label>
                         <input type="text" id="bankName" name="bankName"
                                class="w-full border rounded-md px-4 py-2">
                     </div>
                     <div>
-                        <label for="bankCity" class="block">Bank
-                            City:</label>
+                        <label for="bankCity" class="block">Bank City:</label>
                         <input type="text" id="bankCity" name="bankCity"
                                class="w-full border rounded-md px-4 py-2">
                     </div>
                     <div>
-                        <label for="branchName" class="block">Branch
-                            Name:</label>
-                        <input type="text" id="branchName"
-                               name="branchName"
+                        <label for="branchName" class="block">Branch Name:</label>
+                        <input type="text" id="branchName" name="branchName"
                                class="w-full border rounded-md px-4 py-2">
                     </div>
                     <div>
-                        <label for="relationWithAccountHolder"
-                               class="block">Relation with Account
-                            Holder:</label>
-                        <input type="text"
-                               id="relationWithAccountHolder"
-                               name="relationWithAccountHolder"
+                        <label for="relationWithAccountHolder" class="block">Relation with Account Holder:</label>
+                        <input type="text" id="relationWithAccountHolder" name="relationWithAccountHolder"
                                class="w-full border rounded-md px-4 py-2">
                     </div>
                     <!-- Consent Form -->
                     <div>
                         <label class="block mb-2">Consent (T&C)</label>
-                        <input type="checkbox" id="consentCheckbox"
-                               name="consentCheckbox" class="mr-2">
-                        <label for="consentCheckbox">I agree to the
-                            Terms & Conditions</label>
+                        <input type="checkbox" id="consentCheckbox" name="consentCheckbox" class="mr-2">
+                        <label for="consentCheckbox">I agree to the Terms & Conditions <br> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eaque, id perferendis soluta magni possimus facere illum, veniam mollitia voluptatem laborum cupiditate ullam vitae fuga error officia consequuntur ipsam obcaecati quod!</label>
                     </div>
-                    <button type="button"
-                            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                             onclick="saveBankDetails()">Save</button>
-                    <!-- Updated here -->
                 </form>
-            </div>
-            <!-- View Screen -->
-            <div class="bg-green-500 rounded-lg p-6 text-white hidden"
-                 id="dashboardDetails"> <!-- Initially hidden -->
-                <h2 class="text-lg font-semibold mb-4">Bank Details</h2>
-                <div class="text-white">
-                    <p>Account Holder Name: <span
-                            id="viewAccountHolderName"></span></p>
-                    <p>Account Number: <span
-                            id="viewAccountNumber"></span></p>
-                    <p>IFSC Code: <span id="viewIFSCCode"></span></p>
-                    <p>Bank Name: <span id="viewBankName"></span></p>
-                    <p>Bank City: <span id="viewBankCity"></span></p>
-                    <p>Branch Name: <span
-                            id="viewBranchName"></span></p>
-                    <p>Relation with Account Holder: <span
-                            id="viewRelationWithAccountHolder"></span></p>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    function showBankDetails() {
-        document.getElementById('bankUpdateForm').style.display = 'block'; // Show bank details form
-        document.getElementById('dashboardDetails').style.display = 'none'; // Hide dashboard details
+    function showContent(tab) {
+        // Hide all content sections
+        document.querySelectorAll('.content-section').forEach((el) => {
+            el.classList.remove('active');
+        });
+
+        // Show the selected content section
+        document.getElementById(`${tab}Content`).classList.add('active');
+
+        // Show the success message in the dashboard section
+        if (tab === 'dashboard') {
+            document.getElementById('dashboardSuccessMessage').style.display = 'block';
+        } else {
+            document.getElementById('dashboardSuccessMessage').style.display = 'none';
+        }
     }
 
     function saveBankDetails() {
@@ -218,13 +326,19 @@
         document.getElementById('viewRelationWithAccountHolder').textContent = relationWithAccountHolder;
 
         // Show the bank details on the dashboard
-        document.getElementById('bankUpdateForm').style.display = 'none'; // Hide bank details form
-        document.getElementById('dashboardDetails').style.display = 'block'; // Show dashboard details
+        showContent('dashboard');
+        // Show success message in dashboard section
+        document.getElementById('bankDetailsSavedMessage').style.display = 'block';
     }
 
     function search() {
-        // Handle search functionality here
+
         alert('Search functionality will be implemented here.');
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('collapsed');
     }
 </script>
 </body>
